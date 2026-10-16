@@ -4,9 +4,11 @@
 #   * The experience's IDs are plain configuration below (they are public: they appear
 #     in Creator Hub URLs). Change them here if you ever publish to a different experience.
 #   * The API key is the only secret. Repo Settings -> Secrets and variables -> Actions:
-#       ROBLOX_API_KEY   Open Cloud API key with "universe-places: write" for this experience
+#       ROBLOX_API_KEY   Open Cloud API key with "Place Publishing" (universe-places) WRITE
+#                        access granted for THIS experience, created under the same creator
+#                        (your account, or the group) that owns the experience.
 #
-# Then: Actions tab -> "Publish to Roblox" -> Run workflow.
+# Then: Actions tab -> "Publish to Roblox" -> Run workflow (branch: main).
 
 name: Publish to Roblox
 
@@ -28,6 +30,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Public lookup, no key needed: catches a wrong or mismatched ID before we build.
+      - name: Check that the Place belongs to the Universe
+        run: |
+          set -euo pipefail
+          status=$(curl -sS -o universe.json -w "%{http_code}" \
+            "https://apis.roblox.com/universes/v1/places/${PLACE_ID}/universe")
+          echo "Lookup HTTP ${status}: $(cat universe.json)"
+          if [ "${status}" != "200" ]; then
+            echo "::error::Roblox could not look up place ${PLACE_ID} (HTTP ${status}). Check PLACE_ID at the top of publish.yml."
+            exit 1
+          fi
+          found=$(python3 -c "import json; print(json.load(open('universe.json')).get('universeId'))")
+          if [ "${found}" != "${UNIVERSE_ID}" ]; then
+            echo "::error::Place ${PLACE_ID} belongs to universe '${found}', not ${UNIVERSE_ID}. Fix the IDs at the top of publish.yml (Creator Hub -> experience card -> ... -> Copy Universe ID / Copy Start Place ID)."
+            exit 1
+          fi
+          echo "OK: place ${PLACE_ID} is the start place of universe ${UNIVERSE_ID}"
 
       - name: Install tools
         run: scripts/install-tools.sh .tools
@@ -53,8 +73,20 @@ jobs:
             --data-binary @build/FirstChair.rbxlx)
           echo "Roblox responded with HTTP ${status}"
           cat response.json; echo
-          if [ "${status}" != "200" ]; then
-            echo "::error::Publish failed (HTTP ${status}). See docs/PUBLISHING_FROM_IPAD.md -> Troubleshooting."
-            exit 1
-          fi
-          echo "Published! New place version: $(cat response.json)"
+          case "${status}" in
+            200)
+              echo "Published! New place version: $(cat response.json)"
+              ;;
+            401)
+              echo "::error::Roblox rejected the API key itself (401). The key is wrong, expired, or its 'Accepted IP Addresses' does not include 0.0.0.0/0. Create a new key and update the ROBLOX_API_KEY secret."
+              exit 1
+              ;;
+            403)
+              echo "::error::The key is valid but not allowed to publish this experience (403 'Scope not authorized'). In Creator Hub -> Open Cloud -> API Keys, edit the key: under Access Permissions add 'Place Publishing' (universe-places), select the experience with universe ID ${UNIVERSE_ID}, tick 'write', then Save. If a group owns the experience, the key must be created under that group (Creator Hub -> switch creator to the group). Then re-run this workflow."
+              exit 1
+              ;;
+            *)
+              echo "::error::Publish failed (HTTP ${status}). See docs/PUBLISHING_FROM_IPAD.md -> Troubleshooting."
+              exit 1
+              ;;
+          esac

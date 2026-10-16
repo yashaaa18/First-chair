@@ -116,7 +116,8 @@ If something looks wrong, describe it or attach a screenshot when you talk to Cl
 | Problem | Fix |
 |---|---|
 | Publish fails with **HTTP 401** | The API key is wrong, expired, or missing `0.0.0.0/0` in Accepted IP Addresses. Make a new key and update the `ROBLOX_API_KEY` secret. |
-| Publish fails with **HTTP 403** | The key lacks **universe-places → write** for *this* experience. Edit the key's permissions. |
+| Publish fails with **HTTP 403** `Scope not authorized` | The key is real, but it isn't allowed to publish *this* experience. In Creator Hub → **Open Cloud → API Keys**, open the key → **Access Permissions**: add **Place Publishing** (`universe-places`), choose the experience whose Universe ID matches the one in `publish.yml`, tick **write**, save. If a **group** owns the experience, the key must be created while Creator Hub is switched to that group. No code change needed; just re-run. |
+| Step "Check that the Place belongs to the Universe" fails | The two IDs at the top of `publish.yml` don't match each other or don't exist. The error says which universe the place really belongs to; fix the IDs on github.com. |
 | Publish fails with **HTTP 404** | The Universe ID or Place ID at the top of `.github/workflows/publish.yml` is wrong. Compare with Creator Hub (Step 2). |
 | "Missing secret" error | The secret must be named exactly `ROBLOX_API_KEY` (capital letters, underscores). |
 | No **Run workflow** button | The workflow isn't on `main` yet. Do Step 5. |
