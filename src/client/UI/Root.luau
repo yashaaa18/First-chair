@@ -2,7 +2,7 @@
 	Root — the three ScreenGuis and the scaled 960×560 canvas everything sits on.
 
 	  Backdrop (order 1)  full-bleed menu backdrop
-	  Main     (order 5)  HUD, dialogue, modals, toasts (inside device safe area)
+	  Main     (order 5)  dialogue, HUD, modals, toasts (inside device safe area)
 	  Overlay  (order 20) fades, objection, verdict, results
 
 	Each GUI holds a "Canvas" frame sized in reference pixels and scaled with a
@@ -83,8 +83,9 @@ function Root.init()
 	Root.backdropGui, Root.mainGui, Root.overlayGui = backdropGui, mainGui, overlayGui
 	Root.backdrop = backdrop
 	Root.menu = layer(main, "Menu", 1)
-	Root.hud = layer(main, "Hud", 2)
-	Root.dialogue = layer(main, "Dialogue", 3)
+	-- Dialogue's tap-anywhere catcher sits *below* the HUD so Case File / Pause stay tappable.
+	Root.dialogue = layer(main, "Dialogue", 2)
+	Root.hud = layer(main, "Hud", 3)
 	Root.modal = layer(main, "Modal", 4)
 	Root.popup = layer(main, "Popup", 5)
 	Root.toast = layer(main, "Toast", 6)

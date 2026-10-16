@@ -34,6 +34,7 @@ local function hideCoreUi()
 			Enum.CoreGuiType.PlayerList,
 			Enum.CoreGuiType.Backpack,
 			Enum.CoreGuiType.Health,
+			Enum.CoreGuiType.Chat,
 			Enum.CoreGuiType.EmotesMenu,
 		}
 	do
