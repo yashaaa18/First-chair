@@ -1,0 +1,11 @@
+# Build output (regenerate with scripts/build.sh)
+/build/*.rbxl
+/build/*.rbxlx.lock
+sourcemap.json
+# Secrets — NEVER commit these
+.env
+*.key
+*.secret
+# Tooling caches
+/.tools/
+roblox.yml

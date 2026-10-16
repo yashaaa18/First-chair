@@ -1,0 +1,5 @@
+# Tool versions used by this project (install with https://github.com/rojo-rbx/rokit)
+[tools]
+rojo = "rojo-rbx/rojo@7.4.4"
+stylua = "JohnnyMorganz/StyLua@0.20.0"
+lune = "lune-org/lune@0.8.9"

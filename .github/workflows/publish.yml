@@ -1,0 +1,57 @@
+# Publishes the game to Roblox with Open Cloud — no Studio needed.
+#
+# One-time setup (see docs/PUBLISHING_FROM_IPAD.md):
+#   Repo Settings -> Secrets and variables -> Actions -> New repository secret:
+#     ROBLOX_API_KEY      Open Cloud API key with "universe-places: write" for your experience
+#     ROBLOX_UNIVERSE_ID  your experience's Universe ID
+#     ROBLOX_PLACE_ID     the start place's Place ID
+#
+# Then: Actions tab -> "Publish to Roblox" -> Run workflow.
+
+name: Publish to Roblox
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Published = live for players. Saved = upload without going live."
+        type: choice
+        options: [Published, Saved]
+        default: Published
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: scripts/install-tools.sh .tools
+
+      - name: Check, test, build, bake and simulate
+        run: scripts/build.sh
+
+      - name: Upload to Roblox (Open Cloud Place Publishing API)
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          UNIVERSE_ID: ${{ secrets.ROBLOX_UNIVERSE_ID }}
+          PLACE_ID: ${{ secrets.ROBLOX_PLACE_ID }}
+          VERSION_TYPE: ${{ inputs.version_type }}
+        run: |
+          set -euo pipefail
+          if [ -z "${ROBLOX_API_KEY}" ] || [ -z "${UNIVERSE_ID}" ] || [ -z "${PLACE_ID}" ]; then
+            echo "::error::Missing secrets. Add ROBLOX_API_KEY, ROBLOX_UNIVERSE_ID and ROBLOX_PLACE_ID in repo settings."
+            exit 1
+          fi
+          status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
+            "https://apis.roblox.com/universes/v1/${UNIVERSE_ID}/places/${PLACE_ID}/versions?versionType=${VERSION_TYPE}" \
+            -H "x-api-key: ${ROBLOX_API_KEY}" \
+            -H "Content-Type: application/xml" \
+            --data-binary @build/FirstChair.rbxlx)
+          echo "Roblox responded with HTTP ${status}"
+          cat response.json; echo
+          if [ "${status}" != "200" ]; then
+            echo "::error::Publish failed (HTTP ${status}). See docs/PUBLISHING_FROM_IPAD.md -> Troubleshooting."
+            exit 1
+          fi
+          echo "Published! New place version: $(cat response.json)"

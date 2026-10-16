@@ -1,0 +1,61 @@
+{
+  "name": "FirstChair",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "$properties": {
+        "CameraMaxZoomDistance": 14,
+        "CameraMinZoomDistance": 4,
+        "CharacterJumpPower": 0,
+        "CharacterWalkSpeed": 0,
+        "CharacterUseJumpPower": true
+      },
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "StarterGui": {
+      "$properties": {
+        "ScreenOrientation": "LandscapeSensor",
+        "ResetPlayerGuiOnSpawn": false
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Technology": "ShadowMap",
+        "Ambient": [0.36, 0.31, 0.27],
+        "OutdoorAmbient": [0.55, 0.5, 0.46],
+        "Brightness": 2.2,
+        "ClockTime": 16.6,
+        "GeographicLatitude": 38,
+        "EnvironmentDiffuseScale": 0.35,
+        "EnvironmentSpecularScale": 0.4,
+        "ExposureCompensation": 0.1,
+        "GlobalShadows": true,
+        "ShadowSoftness": 0.35
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "StreamingEnabled": false
+      }
+    },
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}
