@@ -1,10 +1,10 @@
 # Publishes the game to Roblox with Open Cloud — no Studio needed.
 #
-# One-time setup (see docs/PUBLISHING_FROM_IPAD.md):
-#   Repo Settings -> Secrets and variables -> Actions -> New repository secret:
-#     ROBLOX_API_KEY      Open Cloud API key with "universe-places: write" for your experience
-#     ROBLOX_UNIVERSE_ID  your experience's Universe ID
-#     ROBLOX_PLACE_ID     the start place's Place ID
+# Setup (see docs/PUBLISHING_FROM_IPAD.md):
+#   * The experience's IDs are plain configuration below (they are public: they appear
+#     in Creator Hub URLs). Change them here if you ever publish to a different experience.
+#   * The API key is the only secret. Repo Settings -> Secrets and variables -> Actions:
+#       ROBLOX_API_KEY   Open Cloud API key with "universe-places: write" for this experience
 #
 # Then: Actions tab -> "Publish to Roblox" -> Run workflow.
 
@@ -18,6 +18,10 @@ on:
         type: choice
         options: [Published, Saved]
         default: Published
+
+env:
+  UNIVERSE_ID: "10771328364"
+  PLACE_ID: "125527667705419"
 
 jobs:
   publish:
@@ -34,15 +38,14 @@ jobs:
       - name: Upload to Roblox (Open Cloud Place Publishing API)
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-          UNIVERSE_ID: ${{ secrets.ROBLOX_UNIVERSE_ID }}
-          PLACE_ID: ${{ secrets.ROBLOX_PLACE_ID }}
           VERSION_TYPE: ${{ inputs.version_type }}
         run: |
           set -euo pipefail
-          if [ -z "${ROBLOX_API_KEY}" ] || [ -z "${UNIVERSE_ID}" ] || [ -z "${PLACE_ID}" ]; then
-            echo "::error::Missing secrets. Add ROBLOX_API_KEY, ROBLOX_UNIVERSE_ID and ROBLOX_PLACE_ID in repo settings."
+          if [ -z "${ROBLOX_API_KEY}" ]; then
+            echo "::error::Missing secret ROBLOX_API_KEY. Add it under Settings -> Secrets and variables -> Actions."
             exit 1
           fi
+          echo "Publishing to universe ${UNIVERSE_ID}, place ${PLACE_ID} (${VERSION_TYPE})"
           status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
             "https://apis.roblox.com/universes/v1/${UNIVERSE_ID}/places/${PLACE_ID}/versions?versionType=${VERSION_TYPE}" \
             -H "x-api-key: ${ROBLOX_API_KEY}" \

@@ -32,11 +32,16 @@ This guide gets the game from this GitHub repository onto Roblox using only Safa
    * If it creates an experience in the browser, you're done. Continue to Step 2.
    * If it says to open Roblox Studio, you need a computer once. In Studio, choose **New → Baseplate**, then **File → Publish to Roblox**, give it a name ("First Chair") and publish. You won't need the computer again.
 
-## Step 2: Copy two ID numbers
+## Step 2: Check the two ID numbers
 
-1. In **Creations**, find your experience and tap the **⋯** menu on its card.
-2. Tap **Copy Universe ID** and paste it into the Notes app for now.
-3. Tap **Copy Start Place ID** and paste that too.
+The workflow already knows which experience to publish to. The IDs are written at the top of `.github/workflows/publish.yml`:
+
+```
+UNIVERSE_ID: "10771328364"
+PLACE_ID: "125527667705419"
+```
+
+These aren't secrets: they appear in your Creator Hub URLs. If you ever publish to a different experience, edit those two lines on github.com (tap the ✏️ pencil on the file). To find an experience's IDs: in **Creations**, tap the **⋯** menu on its card → **Copy Universe ID** / **Copy Start Place ID**.
 
 ## Step 3: Create an Open Cloud API key
 
@@ -47,19 +52,17 @@ This guide gets the game from this GitHub repository onto Roblox using only Safa
 5. Optional: set an expiration date.
 6. Tap **Save & Generate Key**, then **Copy Key to Clipboard**. Roblox shows the key only once.
 
-## Step 4: Give the secrets to GitHub
+## Step 4: Give the key to GitHub
 
 1. In Safari, open this repository on github.com.
 2. Go to **Settings → Secrets and variables → Actions → New repository secret**. On a phone-sized view, Settings may be under the **⋯** menu.
-3. Add three secrets with these exact names:
+3. Add one secret with this exact name:
 
 | Name | Value |
 |---|---|
 | `ROBLOX_API_KEY` | the key you copied in Step 3 |
-| `ROBLOX_UNIVERSE_ID` | the Universe ID from Step 2 |
-| `ROBLOX_PLACE_ID` | the Start Place ID from Step 2 |
 
-Afterwards, delete the key from your Notes app.
+Afterwards, delete the key from anywhere else you pasted it.
 
 ## Step 5: Put the workflow on your main branch (one time)
 
@@ -114,8 +117,8 @@ If something looks wrong, describe it or attach a screenshot when you talk to Cl
 |---|---|
 | Publish fails with **HTTP 401** | The API key is wrong, expired, or missing `0.0.0.0/0` in Accepted IP Addresses. Make a new key and update the `ROBLOX_API_KEY` secret. |
 | Publish fails with **HTTP 403** | The key lacks **universe-places → write** for *this* experience. Edit the key's permissions. |
-| Publish fails with **HTTP 404** | The Universe ID or Place ID is wrong. Copy them again (Step 2). Make sure you used the Universe ID, not the Place ID, for `ROBLOX_UNIVERSE_ID`. |
-| "Missing secrets" error | Check that the three secret names match exactly (capital letters, underscores). |
+| Publish fails with **HTTP 404** | The Universe ID or Place ID at the top of `.github/workflows/publish.yml` is wrong. Compare with Creator Hub (Step 2). |
+| "Missing secret" error | The secret must be named exactly `ROBLOX_API_KEY` (capital letters, underscores). |
 | No **Run workflow** button | The workflow isn't on `main` yet. Do Step 5. |
 | Build step fails before upload | A test caught a problem. Open the failed step's log and share it with Claude. |
 | In game: "Progress can't be saved right now" | Roblox DataStores were briefly unavailable. Play continues, but that session isn't saved. In Studio this is normal unless *Game Settings → Security → Enable Studio Access to API Services* is on. |
