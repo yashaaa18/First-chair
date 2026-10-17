@@ -89,7 +89,7 @@ Every later change follows the same flow: update the code, then run **Publish to
 
 Open your experience, then **Configure** (or the experience's dashboard page):
 
-* **Basic Info:** name it *First Chair*, add a description, and upload an icon and thumbnails. You can make these on the iPad. A courtroom screenshot works well.
+* **Basic Info:** name it *First Chair*, add a description, and upload the icon and thumbnails from the `marketing/out` folder (open the file on github.com → **Download**, then upload from Files). See `marketing/README.md`, including why the teaser video shouldn't go on the Roblox page until it contains real gameplay.
 * **Avatar:** set **Avatar Type → R15**. The gesture animations are R15. R6 avatars still work but won't point.
 * **Questionnaire / Maturity:** fill in the content questionnaire. It's required before the experience can be public. The game has no violence, gore or romance.
 * **Server size (optional):** the game already hides other players, so each player gets a private story. A small server size like 6 keeps servers light.

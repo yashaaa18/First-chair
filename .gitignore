@@ -9,3 +9,4 @@ sourcemap.json
 # Tooling caches
 /.tools/
 roblox.yml
+node_modules
