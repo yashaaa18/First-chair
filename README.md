@@ -44,7 +44,7 @@ docs/
 
 ## Publish it (from an iPad)
 
-Follow **[docs/PUBLISHING_FROM_IPAD.md](docs/PUBLISHING_FROM_IPAD.md)**. In short: create the experience once, make an Open Cloud API key, paste three secrets into GitHub, then tap **Actions → Publish to Roblox → Run workflow**.
+Follow **[docs/PUBLISHING_FROM_IPAD.md](docs/PUBLISHING_FROM_IPAD.md)**. In short: create the experience once, make an Open Cloud API key, save it as the one GitHub secret `ROBLOX_API_KEY`, then tap **Actions → Publish to Roblox → Run workflow**.
 
 ## Build it yourself (any Linux/Mac shell, optional)
 
