@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>First Chair — store art</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #2e1f18; --walnut: #5c3c2a; --walnut-light: #7a543a; --oak: #a07854;
+    --navy: #162134; --navy-deep: #0d1421; --navy-soft: #26344c;
+    --ivory: #f6f1e7; --cream: #e8deca; --stone: #cdc4b4;
+    --brass: #b6925c; --brass-dark: #8c6c40; --gold: #cdac70;
+    --burgundy: #762a2e; --leather: #46261e; --warm: #ffd6a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--navy-deep); }
+  body { font-family: "Montserrat", sans-serif; color: var(--ivory); overflow: hidden; }
+  .serif { font-family: "Merriweather", serif; }
+
+  /* ---------- 1920 × 1080 title thumbnail ---------- */
+  .wide {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    background:
+      radial-gradient(1200px 700px at 72% 42%, rgba(255, 196, 130, .22), transparent 60%),
+      radial-gradient(900px 600px at 15% 90%, rgba(182, 146, 92, .12), transparent 60%),
+      linear-gradient(180deg, #0b111c 0%, var(--navy-deep) 55%, #0a0e17 100%);
+  }
+  /* wood-panelled back wall */
+  .panelling {
+    position: absolute; left: 0; right: 0; top: 0; height: 760px;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 2px, transparent 2px 160px),
+      linear-gradient(180deg, #3a271d 0%, #2e1f18 100%);
+    opacity: .55;
+    mask-image: linear-gradient(90deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.95) 45%, #000 100%);
+    -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.95) 45%, #000 100%);
+  }
+  .rail { position: absolute; left: 0; right: 0; height: 10px; background: linear-gradient(180deg, var(--gold), var(--brass-dark)); box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+  .floor {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 330px;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.14) 0 3px, transparent 3px 110px),
+      linear-gradient(180deg, #4a3123 0%, #2a1b14 100%);
+    transform: perspective(900px) rotateX(55deg); transform-origin: top;
+  }
+  .floor-shade { position: absolute; left: 0; right: 0; bottom: 0; height: 360px; background: linear-gradient(180deg, transparent, rgba(5,8,14,.85)); }
+
+  /* dossal + seal */
+  .dossal {
+    position: absolute; left: 1215px; top: 90px; width: 420px; height: 560px;
+    background: linear-gradient(180deg, #1b2a44, #121d31);
+    border: 6px solid var(--brass-dark); box-shadow: inset 0 0 0 2px rgba(205,172,112,.35), 0 30px 60px rgba(0,0,0,.5);
+  }
+  .seal {
+    position: absolute; left: 50%; top: 110px; transform: translateX(-50%);
+    width: 250px; height: 250px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #d9bb82, var(--brass) 55%, var(--brass-dark));
+    box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 -6px 14px rgba(0,0,0,.25);
+    display: grid; place-items: center;
+  }
+  .seal-inner { width: 206px; height: 206px; border-radius: 50%; background: var(--navy-deep); display: grid; place-items: center; text-align: center; }
+  .seal-inner .serif { color: var(--gold); font-weight: 900; font-size: 34px; letter-spacing: 2px; line-height: 1.1; }
+  .seal-inner small { display: block; font-family: "Montserrat"; font-weight: 600; font-size: 13px; letter-spacing: 4px; color: var(--cream); margin-top: 8px; }
+  .motto { position: absolute; left: 0; right: 0; bottom: 42px; text-align: center; font-weight: 600; letter-spacing: 5px; font-size: 16px; color: var(--gold); }
+
+  /* bench */
+  .bench {
+    position: absolute; left: 1100px; top: 560px; width: 660px; height: 250px;
+    background: linear-gradient(180deg, #6a4631, #4a3023 60%, #3a2419);
+    border-top: 14px solid #2a1a12; box-shadow: 0 40px 80px rgba(0,0,0,.6);
+  }
+  .bench::before { content: ""; position: absolute; left: 0; right: 0; top: 16px; height: 6px; background: linear-gradient(90deg, var(--brass-dark), var(--gold), var(--brass-dark)); }
+  .bench .panel { position: absolute; top: 56px; width: 150px; height: 140px; background: linear-gradient(180deg, #7b553b, #624230); box-shadow: inset 0 0 0 3px rgba(0,0,0,.25); }
+  .plate { position: absolute; left: 50%; top: 32px; transform: translateX(-50%); padding: 6px 20px; background: linear-gradient(180deg, var(--gold), var(--brass)); color: var(--navy-deep); font-weight: 700; letter-spacing: 3px; font-size: 14px; }
+
+  /* pendants */
+  .pendant { position: absolute; top: 0; width: 4px; background: linear-gradient(180deg, var(--brass-dark), var(--brass)); }
+  .pendant .shade { position: absolute; left: 50%; bottom: -46px; transform: translateX(-50%); width: 130px; height: 46px; border-radius: 0 0 65px 65px / 0 0 40px 40px; background: linear-gradient(180deg, var(--brass), var(--brass-dark)); box-shadow: 0 0 60px 20px rgba(255, 200, 140, .35); }
+  .pendant .glow { position: absolute; left: 50%; bottom: -52px; transform: translateX(-50%); width: 110px; height: 10px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 40px 14px rgba(255,214,160,.8); }
+
+  /* title block */
+  .title { position: absolute; left: 120px; top: 250px; width: 980px; }
+  .eyebrow { font-weight: 600; letter-spacing: 7px; font-size: 24px; color: var(--gold); }
+  h1.serif { font-weight: 900; font-size: 196px; line-height: .98; letter-spacing: -2px; margin-top: 18px; text-shadow: 0 10px 40px rgba(0,0,0,.6); }
+  h1 span { color: var(--gold); }
+  .rule { width: 180px; height: 4px; background: var(--gold); margin: 34px 0 28px; }
+  .tag.serif { font-style: italic; font-size: 44px; color: var(--cream); }
+  .meta { position: absolute; left: 120px; bottom: 70px; display: flex; gap: 34px; font-weight: 600; letter-spacing: 4px; font-size: 20px; color: var(--stone); }
+  .meta span::before { content: "·"; margin-right: 34px; color: var(--brass); }
+  .meta span:first-child::before { content: none; margin: 0; }
+
+  /* exhibit card */
+  .card {
+    position: absolute; left: 870px; top: 700px; width: 330px; height: 230px; padding: 26px 28px;
+    background: linear-gradient(180deg, var(--ivory), var(--cream)); color: var(--espresso);
+    transform: rotate(-7deg); box-shadow: 0 40px 70px rgba(0,0,0,.6);
+  }
+  .card .kind { font-weight: 700; letter-spacing: 4px; font-size: 13px; color: var(--brass-dark); }
+  .card .name { font-weight: 700; font-size: 30px; line-height: 1.1; margin-top: 10px; }
+  .card .line { height: 3px; background: var(--stone); margin-top: 14px; border-radius: 2px; }
+  .card .line.short { width: 60%; }
+  .stamp {
+    position: absolute; right: 14px; bottom: 30px; padding: 6px 14px; border: 5px solid var(--burgundy); color: var(--burgundy);
+    font-family: "Merriweather"; font-weight: 900; font-size: 30px; letter-spacing: 3px; transform: rotate(-12deg); opacity: .9;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- "three cases" variant ---------- */
+  .cases { position: absolute; left: 0; right: 0; top: 300px; display: flex; justify-content: center; gap: 44px; }
+  .case {
+    width: 470px; height: 560px; padding: 44px 44px; border: 2px solid rgba(182,146,92,.55); border-radius: 18px;
+    background: linear-gradient(180deg, rgba(22,33,52,.96), rgba(13,20,33,.96)); box-shadow: 0 40px 80px rgba(0,0,0,.55);
+    position: relative;
+  }
+  .case .num { font-weight: 600; letter-spacing: 6px; color: var(--gold); font-size: 20px; }
+  .case .ttl { font-weight: 700; font-size: 52px; line-height: 1.05; margin-top: 18px; }
+  .case .bar { width: 70px; height: 3px; background: var(--brass); margin: 26px 0 24px; }
+  .case .blurb { font-size: 22px; line-height: 1.45; color: var(--stone); }
+  .case .mech { position: absolute; left: 44px; bottom: 40px; font-weight: 600; letter-spacing: 4px; font-size: 15px; color: var(--gold); }
+  .case .grade { position: absolute; right: 36px; top: 36px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--gold); display: grid; place-items: center; font-family: "Merriweather"; font-weight: 900; font-size: 36px; color: var(--gold); }
+  .cases-head { position: absolute; left: 0; right: 0; top: 110px; text-align: center; }
+  .cases-head .eyebrow { font-size: 22px; }
+  .cases-head h2.serif { font-size: 96px; font-weight: 900; margin-top: 10px; }
+  .cases-foot { position: absolute; left: 0; right: 0; bottom: 70px; text-align: center; font-style: italic; font-size: 36px; color: var(--cream); }
+
+  /* ---------- 512 × 512 icon ---------- */
+  .icon {
+    position: relative; width: 512px; height: 512px; overflow: hidden;
+    background:
+      radial-gradient(360px 300px at 50% 28%, rgba(255,196,130,.28), transparent 65%),
+      linear-gradient(180deg, #152034 0%, var(--navy-deep) 100%);
+    border-radius: 0;
+  }
+  .icon .ring { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%); width: 330px; height: 330px; border-radius: 50%; border: 6px solid var(--brass); box-shadow: 0 0 0 14px rgba(182,146,92,.14), 0 30px 60px rgba(0,0,0,.6); }
+  .chair { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -52%); width: 170px; height: 190px; }
+  .chair .back { position: absolute; left: 0; right: 0; top: 0; height: 150px; border-radius: 26px 26px 6px 6px; background: linear-gradient(180deg, #d9bb82, var(--brass) 60%, var(--brass-dark)); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+  .chair .slat { position: absolute; top: 22px; width: 18px; height: 96px; border-radius: 9px; background: var(--navy-deep); }
+  .chair .seat { position: absolute; left: -14px; right: -14px; top: 150px; height: 26px; border-radius: 6px; background: linear-gradient(180deg, #d9bb82, var(--brass-dark)); }
+  .chair .leg { position: absolute; top: 176px; width: 14px; height: 24px; background: var(--brass-dark); }
+  .icon .word { position: absolute; left: 0; right: 0; bottom: 52px; text-align: center; font-family: "Merriweather"; font-weight: 900; font-size: 50px; letter-spacing: 1px; color: var(--ivory); text-shadow: 0 6px 20px rgba(0,0,0,.6); }
+  .icon .sub { position: absolute; left: 0; right: 0; bottom: 28px; text-align: center; font-weight: 600; letter-spacing: 6px; font-size: 13px; color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- 1920×1080 · title -->
+<section id="wide" class="wide">
+  <div class="panelling"></div>
+  <div class="rail" style="top: 484px; opacity: .6"></div>
+  <div class="floor"></div>
+  <div class="floor-shade"></div>
+
+  <div class="pendant" style="left: 1240px; height: 150px"><div class="shade"></div><div class="glow"></div></div>
+  <div class="pendant" style="left: 1620px; height: 190px"><div class="shade"></div><div class="glow"></div></div>
+
+  <div class="dossal">
+    <div class="seal"><div class="seal-inner"><div class="serif">NORTHBRIDGE<br>CIVIL COURT<small>EST. 1911</small></div></div></div>
+    <div class="motto">TRUTH · EVIDENCE · FAIRNESS</div>
+  </div>
+  <div class="bench">
+    <div class="plate">JUDGE ROWAN</div>
+    <div class="panel" style="left: 60px"></div>
+    <div class="panel" style="left: 255px"></div>
+    <div class="panel" style="left: 450px"></div>
+  </div>
+
+  <div class="title">
+    <div class="eyebrow">VALENCE LEGAL PRESENTS</div>
+    <h1 class="serif">First<br><span>Chair</span></h1>
+    <div class="rule"></div>
+    <div class="tag serif">Find the lie. Win the room.</div>
+  </div>
+
+  <div class="card">
+    <div class="kind">CASE 01 · EXHIBIT</div>
+    <div class="name serif">The Signed Lie</div>
+    <div class="line"></div><div class="line"></div><div class="line short"></div>
+    <div class="stamp">DISMISSED</div>
+  </div>
+
+  <div class="meta"><span>3 CASES</span><span>CINEMATIC COURTROOM DRAMA</span><span>MADE FOR TOUCH</span></div>
+</section>
+
+<!-- 1920×1080 · three cases -->
+<section id="cases" class="wide">
+  <div class="panelling" style="opacity:.35"></div>
+  <div class="floor-shade" style="height: 100%"></div>
+  <div class="cases-head">
+    <div class="eyebrow">THREE CASES · ONE CONSPIRACY</div>
+    <h2 class="serif">Every case hides a lie.</h2>
+  </div>
+  <div class="cases">
+    <div class="case">
+      <div class="num">CASE 01</div><div class="grade">S</div>
+      <div class="ttl serif">The Signed Lie</div><div class="bar"></div>
+      <div class="blurb">A café owner is sued over a contract she swears she never signed. The cameras say she's right.</div>
+      <div class="mech">CROSS-EXAMINE THE WITNESS</div>
+    </div>
+    <div class="case">
+      <div class="num">CASE 02</div><div class="grade">A</div>
+      <div class="ttl serif">The Stolen Spark</div><div class="bar"></div>
+      <div class="blurb">A young inventor is accused of copying a rival's design. Two clues together prove who was first.</div>
+      <div class="mech">NEW · COMBINE EVIDENCE</div>
+    </div>
+    <div class="case">
+      <div class="num">CASE 03</div><div class="grade">?</div>
+      <div class="ttl serif">The Midnight File</div><div class="bar"></div>
+      <div class="blurb">A secret file vanishes during a blackout. Rebuild the night, minute by minute, and find who's lying.</div>
+      <div class="mech">NEW · PRESENT IN ORDER</div>
+    </div>
+  </div>
+  <div class="cases-foot serif">“First day, first case. Try not to embarrass us.” — Mara Quinn</div>
+</section>
+
+<!-- 512×512 · icon -->
+<section id="icon" class="icon">
+  <div class="ring"></div>
+  <div class="chair">
+    <div class="back"></div>
+    <div class="slat" style="left: 34px"></div>
+    <div class="slat" style="left: 76px"></div>
+    <div class="slat" style="left: 118px"></div>
+    <div class="seat"></div>
+    <div class="leg" style="left: -8px"></div>
+    <div class="leg" style="right: -8px"></div>
+  </div>
+  <div class="word">First Chair</div>
+  <div class="sub">COURTROOM DRAMA</div>
+</section>
+
+</body>
+</html>

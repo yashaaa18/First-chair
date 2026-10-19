@@ -19,10 +19,15 @@ local lastTarget: CFrame? = nil
 
 local function cam(): Camera
 	camera = workspace.CurrentCamera
-	if camera.CameraType ~= Enum.CameraType.Scriptable then
-		camera.CameraType = Enum.CameraType.Scriptable
-	end
 	return camera
+end
+
+local function scriptable(): Camera
+	local c = cam()
+	if c.CameraType ~= Enum.CameraType.Scriptable then
+		c.CameraType = Enum.CameraType.Scriptable
+	end
+	return c
 end
 
 local function stopAll()
@@ -34,12 +39,27 @@ local function stopAll()
 	currentTween, fovTween, driftTween = nil, nil, nil
 end
 
+-- Hand the camera back to the player (lobby): Roblox's own follow camera.
+function CameraDirector.free()
+	loopToken += 1
+	stopAll()
+	lastTarget = nil
+	local c = cam()
+	local character = game:GetService("Players").LocalPlayer.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	c.CameraType = Enum.CameraType.Custom
+	if humanoid then
+		c.CameraSubject = humanoid
+	end
+	c.FieldOfView = 70
+end
+
 function CameraDirector.init()
-	cam()
+	scriptable()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
 		cam()
 		if lastTarget then
-			camera.CFrame = lastTarget
+			scriptable().CFrame = lastTarget
 		end
 	end)
 end
@@ -48,7 +68,7 @@ end
 function CameraDirector.cut(cf: CFrame, fov: number?)
 	loopToken += 1
 	stopAll()
-	local c = cam()
+	local c = scriptable()
 	c.CFrame = cf
 	if fov then
 		c.FieldOfView = fov
@@ -60,7 +80,7 @@ end
 function CameraDirector.move(cf: CFrame, fov: number?, time: number?, drift: boolean?)
 	loopToken += 1
 	stopAll()
-	local c = cam()
+	local c = scriptable()
 	local duration = time or 0.7
 	if duration <= 0 then
 		CameraDirector.cut(cf, fov)

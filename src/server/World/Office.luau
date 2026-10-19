@@ -282,6 +282,54 @@ function Office.build(root: Instance)
 	end
 	local picture = B.trim(lounge, Vector3.new(0.6, 0.3, 15), rot(boardX + 0.6, 12.8, 4, 0), C.Brass, M.Metal)
 	B.light(picture, "Surface", 1.2, 10, C.WarmLight, Enum.NormalId.Bottom)
+	-- walking players tap this to open the case files
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "CaseFilesPrompt"
+	prompt.ActionText = "Open case files"
+	prompt.ObjectText = "Active Matters"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 14
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = plate
+
+	-- Top Associates leaderboard on the right wall, filled in by LobbyService
+	local lb = B.folder(model, "Leaderboard")
+	B.trim(lb, Vector3.new(0.4, 9.4, 12.4), rot(W / 2 - 0.45, 8.5, 10, 0), C.Walnut, M.Wood)
+	B.trim(lb, Vector3.new(0.42, 9.0, 12.0), rot(W / 2 - 0.5, 8.5, 10, 0), C.Brass, M.Metal)
+	local lbBoard =
+		B.trim(lb, Vector3.new(0.44, 8.6, 11.6), rot(W / 2 - 0.55, 8.5, 10, 0), C.NavyDeep, M.SmoothPlastic)
+	lbBoard.Name = "LeaderboardBoard"
+	local lbGui = Instance.new("SurfaceGui")
+	lbGui.Face = Enum.NormalId.Left
+	lbGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	lbGui.PixelsPerStud = 40
+	lbGui.LightInfluence = 0.5
+	lbGui.MaxDistance = 120
+	lbGui.Parent = lbBoard
+	local lbTitle = Instance.new("TextLabel")
+	lbTitle.Name = "Title"
+	lbTitle.BackgroundTransparency = 1
+	lbTitle.Size = UDim2.new(1, 0, 0.16, 0)
+	lbTitle.Text = "TOP ASSOCIATES"
+	lbTitle.TextColor3 = C.Gold
+	lbTitle.FontFace = Font.new("rbxasset://fonts/families/Merriweather.json", Enum.FontWeight.Bold)
+	lbTitle.TextScaled = true
+	lbTitle.Parent = lbGui
+	local lbList = Instance.new("TextLabel")
+	lbList.Name = "List"
+	lbList.BackgroundTransparency = 1
+	lbList.Position = UDim2.new(0.06, 0, 0.2, 0)
+	lbList.Size = UDim2.new(0.88, 0, 0.76, 0)
+	lbList.Text = "Win a case to make the board."
+	lbList.TextColor3 = C.Ivory
+	lbList.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.Medium)
+	lbList.TextSize = 22
+	lbList.TextWrapped = true
+	lbList.TextXAlignment = Enum.TextXAlignment.Left
+	lbList.TextYAlignment = Enum.TextYAlignment.Top
+	lbList.Parent = lbGui
+	local lbLight = B.trim(lb, Vector3.new(0.6, 0.3, 12), rot(W / 2 - 0.8, 13.5, 10, 0), C.Brass, M.Metal)
+	B.light(lbLight, "Surface", 1.0, 9, C.WarmLight, Enum.NormalId.Bottom)
 
 	----------------------------------------------------------------- Conference Room B (right, glass)
 	local conf = B.folder(model, "ConferenceRoom")

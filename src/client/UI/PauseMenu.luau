@@ -11,7 +11,7 @@ local PauseMenu = {}
 local C = Theme.Colors
 local open = false
 
-function PauseMenu.show(caseTitle: string): string?
+function PauseMenu.show(caseTitle: string, music: { enabled: () -> boolean, toggle: () -> boolean }?): string?
 	if open then
 		return nil
 	end
@@ -68,6 +68,19 @@ function PauseMenu.show(caseTitle: string): string?
 		option("Resume", "resume", "primary", 10)
 		option("Restart Case", "restart", "secondary", 11)
 		option("Main Menu", "menu", "ghost", 12)
+		if music then
+			local b: TextButton
+			b = Kit.button({
+				text = if music.enabled() then "Music: On" else "Music: Off",
+				style = "ghost",
+				size = UDim2.new(1, 0, 0, Theme.TouchHeight - 8),
+				layoutOrder = 13,
+				parent = card,
+				onClick = function()
+					b.Text = if music.toggle() then "Music: On" else "Music: Off"
+				end,
+			})
+		end
 		return nil
 	end)
 	open = false

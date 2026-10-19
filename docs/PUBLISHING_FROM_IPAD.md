@@ -89,10 +89,12 @@ Every later change follows the same flow: update the code, then run **Publish to
 
 Open your experience, then **Configure** (or the experience's dashboard page):
 
-* **Basic Info:** name it *First Chair*, add a description, and upload an icon and thumbnails. You can make these on the iPad. A courtroom screenshot works well.
+* **Basic Info:** name it *First Chair*, add a description, and upload the icon and thumbnails from the `marketing/out` folder (open the file on github.com → **Download**, then upload from Files). See `marketing/README.md`, including why the teaser video shouldn't go on the Roblox page until it contains real gameplay.
 * **Avatar:** set **Avatar Type → R15**. The gesture animations are R15. R6 avatars still work but won't point.
 * **Questionnaire / Maturity:** fill in the content questionnaire. It's required before the experience can be public. The game has no violence, gore or romance.
-* **Server size (optional):** the game already hides other players, so each player gets a private story. A small server size like 6 keeps servers light.
+* **Server size:** the place file asks for **100 players per server** (set in `default.project.json` as `MaxPlayersInternal`). Check it took: Creator Hub → your experience → **Places → First Chair → Max Players**. If it still shows the old number, type 100 there. Cases are always private; the lobby shows the 16 nearest associates, so iPads stay smooth even in a full server. 200 is allowed too, but a lobby that size is noisy and costs frame rate on phones; 100 is the sweet spot.
+* **Music:** upload the four tracks in `marketing/music/` (Creator Hub → **Development Items → Audio → Upload**, they're ~1 MB each, synthesised for this game so they're yours), copy each one's Asset ID, and paste them into `src/shared/Config.luau` as `"rbxassetid://ID"`. Then publish again. Until you do, the game is simply silent.
+* **Badges (optional):** Creator Hub → your experience → **Badges → Create**: *First Verdict* (win Case 1), *Clean Sweep* (earn an S), *First Chair* (win all three). Paste the three IDs into `Config.Badges`. Badges with ID 0 are skipped.
 * **Privacy:** keep it **Private** while you test. You, the owner, can still play a private experience. Switch to **Public** when you're happy.
 
 ## Step 8: Play it on your iPad

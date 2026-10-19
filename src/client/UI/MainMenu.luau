@@ -208,7 +208,14 @@ local function caseCard(parent: Instance, caseId: string, state, order: number, 
 	return card
 end
 
-function MainMenu.run(profile, hooks: { onShow: () -> (), howTo: boolean? }): string
+export type Hooks = {
+	onShow: () -> (),
+	musicEnabled: (() -> boolean)?,
+	onToggleMusic: (() -> boolean)?,
+	startOnSelect: boolean?,
+}
+
+function MainMenu.run(profile, hooks: Hooks): string
 	hooks.onShow()
 	local back = backdrop()
 	local result = Kit.await(function(resolve)
@@ -397,21 +404,68 @@ function MainMenu.run(profile, hooks: { onShow: () -> (), howTo: boolean? }): st
 		Kit.button({
 			text = if hasProgress then "Continue" else "Start Game",
 			style = "primary",
-			size = UDim2.fromOffset(200, Theme.TouchHeight),
+			size = UDim2.fromOffset(190, Theme.TouchHeight),
 			layoutOrder = 1,
 			parent = buttons,
 			onClick = openSelect,
 		})
 		Kit.button({
-			text = "How to Play",
+			text = "Explore the Office",
 			style = "secondary",
-			size = UDim2.fromOffset(170, Theme.TouchHeight),
+			size = UDim2.fromOffset(210, Theme.TouchHeight),
 			layoutOrder = 2,
 			parent = buttons,
+			onClick = function()
+				layer:Destroy()
+				resolve("__lobby")
+			end,
+		})
+		local row2 = Kit.new("Frame", {
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 0, 44),
+			LayoutOrder = 7,
+			Parent = title,
+		})
+		Kit.list(Enum.FillDirection.Horizontal, 12).Parent = row2
+		Kit.button({
+			text = "How to Play",
+			style = "ghost",
+			textSize = Theme.Text.Small,
+			size = UDim2.fromOffset(150, 44),
+			layoutOrder = 1,
+			parent = row2,
 			onClick = function()
 				howToPlay(layer)
 			end,
 		})
+		if hooks.onToggleMusic then
+			local musicButton: TextButton
+			local function label(on: boolean)
+				return if on then "Music: On" else "Music: Off"
+			end
+			musicButton = Kit.button({
+				text = label(hooks.musicEnabled and hooks.musicEnabled() or true),
+				style = "ghost",
+				textSize = Theme.Text.Small,
+				size = UDim2.fromOffset(150, 44),
+				layoutOrder = 2,
+				parent = row2,
+				onClick = function()
+					musicButton.Text = label((hooks.onToggleMusic :: () -> boolean)())
+				end,
+			})
+		end
+		if profile.streak and profile.streak >= 2 then
+			Kit.text({
+				Text = ("%d-day streak  ·  win a case today to keep it"):format(profile.streak),
+				FontFace = Theme.Fonts.Label,
+				TextSize = Theme.Text.Tiny + 1,
+				TextColor3 = C.Accent,
+				Size = UDim2.new(1, 0, 0, 18),
+				LayoutOrder = 8,
+				Parent = title,
+			})
+		end
 
 		if profile.saving == false then
 			Kit.text({
@@ -420,9 +474,24 @@ function MainMenu.run(profile, hooks: { onShow: () -> (), howTo: boolean? }): st
 				TextSize = Theme.Text.Tiny,
 				TextColor3 = C.TextDim,
 				Size = UDim2.new(1, 0, 0, 18),
-				LayoutOrder = 7,
+				LayoutOrder = 9,
 				Parent = title,
 			})
+		end
+		-- Chapter Two teaser under the case cards
+		Kit.text({
+			Text = "CHAPTER TWO  ·  THE SILENT PARTNER  ·  IN DEVELOPMENT",
+			FontFace = Theme.Fonts.Label,
+			TextSize = Theme.Text.Tiny,
+			TextColor3 = C.TextDim,
+			TextXAlignment = Enum.TextXAlignment.Center,
+			AnchorPoint = Vector2.new(0.5, 1),
+			Position = UDim2.new(0.5, 0, 1, -22),
+			Size = UDim2.new(1, -40, 0, 18),
+			Parent = select,
+		})
+		if hooks.startOnSelect then
+			openSelect()
 		end
 		return nil
 	end)
