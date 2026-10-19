@@ -200,6 +200,20 @@ function Results.show(results, caseTitle: string, sounds: { gavel: () -> (), unl
 			Position = UDim2.fromOffset(0, 326),
 			Size = UDim2.new(1, 0, 0, 20),
 		})
+		if results.dailyBonus then
+			t({
+				Text = ("Daily bonus  +%d pts   ·   %d-day streak"):format(
+					results.dailyBonus,
+					results.streak or 1
+				),
+				FontFace = Theme.Fonts.Label,
+				TextSize = Theme.Text.Tiny + 1,
+				TextColor3 = C.Success,
+				TextXAlignment = Enum.TextXAlignment.Center,
+				Position = UDim2.fromOffset(0, 346),
+				Size = UDim2.new(1, 0, 0, 16),
+			})
+		end
 		if results.saved == false then
 			t({
 				Text = "Progress couldn't be saved this session.",
@@ -207,7 +221,7 @@ function Results.show(results, caseTitle: string, sounds: { gavel: () -> (), unl
 				TextSize = Theme.Text.Tiny,
 				TextColor3 = C.Danger,
 				TextXAlignment = Enum.TextXAlignment.Center,
-				Position = UDim2.fromOffset(0, 346),
+				Position = UDim2.fromOffset(0, 364),
 				Size = UDim2.new(1, 0, 0, 16),
 			})
 		end

@@ -18,15 +18,16 @@ You're the newest associate at **Valence Legal**, the most expensive law firm in
 default.project.json      Rojo project (maps the folders below into Roblox)
 build/FirstChair.rbxlx    Ready-made place file (built + world baked in)
 src/
-  shared/                 ReplicatedStorage.Shared: palette, cast, stage marks, ranks
+  shared/                 ReplicatedStorage.Shared: config, palette, cast, stage marks, ranks
   server/                 ServerScriptService.Server
     CaseLogic.luau        Rules engine: answers, scoring, retries (pure Luau, tested)
     CaseService.luau      Remotes + server-side validation + unlocks
     DataService.luau      DataStore saving with retries and safe offline mode
+    LobbyService.luau     Leaderstats, leaderboard, badges, verdict announcements
     Cases/Case1-3.luau    The three scripts (story, evidence and answer keys)
     World/                Office, courtroom, skyline, lighting, cast models
   client/                 StarterPlayerScripts.Client
-    Controllers/          Case runner, cinematic camera, stage (actors), audio
+    Controllers/          Case runner, cinematic camera, stage + lobby, music, audio
     UI/                   Menu, dialogue, choices, evidence, testimony, results…
 tests/run.luau            19 logic tests: every case played start to finish
 scripts/
@@ -36,6 +37,9 @@ scripts/
 .github/workflows/
   ci.yml                  Builds and tests on every push
   publish.yml             One-tap publish to Roblox via Open Cloud
+marketing/
+  music/                  Four original tracks (compose.py synthesises them from scratch)
+  out/                    Icon, thumbnails, teaser video
 docs/
   PUBLISHING_FROM_IPAD.md Step-by-step publishing guide for iPad
   REPORT.md               What's built, what's tested, what still needs work
@@ -60,4 +64,6 @@ With Roblox Studio on a computer you can also live-sync with `rojo serve` and th
 * **The server is the judge.** Clients only receive answer-free scripts. Every answer, score, unlock and save is decided on the server.
 * **Mistakes never restart a case.** A wrong answer costs points and Mara tells you why. Then you try again.
 * **Mobile first.** Everything is tapped. There's no walking or camera control, and every button is at least 54 px tall at reference scale. The UI scales from phones to monitors.
-* **Lean visuals.** About 740 parts, 10 non-shadow lights and no external assets. The look comes from a restrained palette (espresso, walnut, navy, ivory, brass), warm lighting and careful composition.
+* **Lean visuals.** About 740 parts, 11 non-shadow lights and no external assets. The look comes from a restrained palette (espresso, walnut, navy, ivory, brass), warm lighting and careful composition.
+* **Shared lobby, private cases.** Up to 100 associates share a server. In the office lobby you walk, chat and see the nearest 16 players with their career titles; the Top Associates board lists the top 10 by promotion points. The moment a case starts, the world becomes yours alone.
+* **Reasons to come back.** Daily bonus points and a win streak, three badges, server-wide verdict announcements, a leaderboard, and a Chapter Two teaser. Knobs live in `src/shared/Config.luau`.

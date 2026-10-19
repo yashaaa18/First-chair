@@ -18,6 +18,8 @@ Net.Functions = {
 
 Net.Events = {
 	"Notice", -- server -> client: { kind, text }
+	"Broadcast", -- server -> everyone: { kind, text } (someone won a case)
+	"Leaderboard", -- server -> client: { { name, points, userId }, ... }
 }
 
 local folder: Folder? = nil

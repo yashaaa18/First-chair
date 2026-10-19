@@ -11,12 +11,14 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared.Config)
 local Net = require(Shared.Net)
 local Ranks = require(Shared.Ranks)
 local CaseCatalog = require(Shared.CaseCatalog)
 
 local CaseLogic = require(script.Parent.CaseLogic)
 local DataService = require(script.Parent.DataService)
+local LobbyService = require(script.Parent.LobbyService)
 
 local CASES = {
 	case1 = require(script.Parent.Cases.Case1),
@@ -64,12 +66,12 @@ local function totalPoints(data): number
 			total += Ranks.GradePoints[best.grade] or 0
 		end
 	end
-	return total
+	return total + (data.bonus or 0)
 end
 
 local function summary(player: Player)
 	local profile = DataService.get(player)
-	local data = profile and profile.data or { best = {}, seen = {} }
+	local data = profile and profile.data or { best = {}, seen = {}, bonus = 0, streak = 0, wins = 0 }
 	local cases = {}
 	for _, caseId in CaseCatalog.order do
 		cases[caseId] = {
@@ -85,9 +87,13 @@ local function summary(player: Player)
 		title = Ranks.titleFor(points),
 		nextTitle = nextTitle,
 		nextPoints = nextPoints,
+		streak = data.streak or 0,
+		wins = data.wins or 0,
 		cases = cases,
 	}
 end
+
+CaseService.summary = summary
 
 local function sanitized(caseId: string)
 	local cached = sanitizedCache[caseId]
@@ -181,6 +187,19 @@ local function onSubmit(player: Player, caseId: any, stepIndex: any, answer: any
 				improved = true
 				profile.dirty = true
 			end
+			-- Daily bonus: the first case won each day adds promotion points and extends the streak.
+			local today = math.floor(os.time() / 86400)
+			if profile.data.lastDaily ~= today then
+				profile.data.streak = if profile.data.lastDaily == today - 1
+					then profile.data.streak + 1
+					else 1
+				profile.data.lastDaily = today
+				profile.data.bonus += Config.DailyBonusPoints
+				outcome.dailyBonus = Config.DailyBonusPoints
+			end
+			profile.data.wins += 1
+			profile.dirty = true
+			outcome.streak = profile.data.streak
 			task.spawn(DataService.save, player)
 		end
 		local after = summary(player)
@@ -196,6 +215,10 @@ local function onSubmit(player: Player, caseId: any, stepIndex: any, answer: any
 			outcome.unlocked = nextId
 		end
 		outcome.rankUp = before ~= nil and before.title ~= after.title and after.title or nil
+		local okSocial, socialErr = pcall(LobbyService.onCaseWon, player, case.id, outcome, after)
+		if not okSocial then
+			warn("[FirstChair] Post-case social update failed:", socialErr)
+		end
 	end
 
 	return result

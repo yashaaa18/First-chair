@@ -16,6 +16,7 @@ local Controllers = script.Parent
 local UI = Controllers.Parent.UI
 local Audio = require(Controllers.Audio)
 local CameraDirector = require(Controllers.CameraDirector)
+local Music = require(Controllers.Music)
 local Stage = require(Controllers.Stage)
 
 local Root = require(UI.Root)
@@ -114,6 +115,7 @@ local handlers = {}
 
 function handlers.scene(step)
 	Transition.fadeOut(0.28)
+	Music.play(step.location)
 	Stage.setScene(step)
 	lastSpeaker = nil
 	local shot = StageLayout.Shots[step.shot]
@@ -331,7 +333,7 @@ function CaseRunner.run(caseId: string): string
 			Evidence.caseFile(inventoryDefs())
 		end,
 		onPause = function()
-			local choice = PauseMenu.show(case.title)
+			local choice = PauseMenu.show(case.title, { enabled = Music.isEnabled, toggle = Music.toggle })
 			if choice == "restart" or choice == "menu" then
 				local quitTo = if choice == "restart" then "replay" else "menu"
 				outcome = quitTo
@@ -394,6 +396,7 @@ function CaseRunner.run(caseId: string): string
 		if result.finished then
 			Hud.hide()
 			Stage.clear()
+			Music.play("results")
 			local choice = Results.show(result.results, case.title, {
 				gavel = function()
 					Audio.play("gavel")

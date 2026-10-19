@@ -13,14 +13,17 @@ local World = require(script.World)
 local Cast = require(script.World.Cast)
 local DataService = require(script.DataService)
 local CaseService = require(script.CaseService)
+local LobbyService = require(script.LobbyService)
 
 World.build()
 Cast.build()
 DataService.start()
 CaseService.start()
+LobbyService.start()
 
 local function onPlayerAdded(player: Player)
 	DataService.load(player)
+	LobbyService.setupPlayer(player, CaseService.summary(player))
 	if not DataService.isSaving(player) then
 		local notice = Net.event("Notice")
 		notice:FireClient(player, {

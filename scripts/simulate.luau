@@ -252,6 +252,10 @@ function wrap(inst)
 			})
 		end,
 		__newindex = function(_, key, value)
+			if key == "Parent" and value == localPlayer then
+				playerChildren[inst.Name] = proxy
+				return
+			end
 			local ok, err = pcall(function()
 				(inst :: any)[key] = unwrap(value)
 			end)
@@ -340,13 +344,28 @@ local function makeCharacter()
 	return model
 end
 local character = makeCharacter()
-local localPlayer = {
+local playerAttributes = {}
+local playerChildren = {}
+local localPlayer
+localPlayer = {
 	Name = "Tester",
 	DisplayName = "Tester",
 	UserId = 1,
 	Character = character,
 	CharacterAdded = Signal.new("CharacterAdded"),
 	Parent = true,
+	FindFirstChild = function(_, name)
+		return playerChildren[name]
+	end,
+	SetAttribute = function(_, name, value)
+		playerAttributes[name] = value
+	end,
+	GetAttribute = function(_, name)
+		return playerAttributes[name]
+	end,
+	GetAttributeChangedSignal = function(_, name)
+		return Signal.new("Attr:" .. name)
+	end,
 	WaitForChild = function(self, name)
 		if name == "PlayerGui" then
 			return playerGui
@@ -408,6 +427,15 @@ local function makeGame(isServer: boolean)
 			GetDataStore = function()
 				error("DataStores unavailable in simulation")
 			end,
+			GetOrderedDataStore = function()
+				error("DataStores unavailable in simulation")
+			end,
+		},
+		BadgeService = {
+			UserHasBadgeAsync = function()
+				return false
+			end,
+			AwardBadge = function() end,
 		},
 		Workspace = workspaceProxy,
 	}
@@ -515,6 +543,9 @@ local fakeNet = {
 		return {
 			OnClientEvent = s,
 			FireClient = function(_, _player, ...)
+				s:Fire(...)
+			end,
+			FireAllClients = function(_, ...)
 				s:Fire(...)
 			end,
 		}

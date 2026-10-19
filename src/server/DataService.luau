@@ -23,6 +23,10 @@ export type Data = {
 	best: { [string]: Best },
 	seen: { [string]: boolean },
 	plays: number,
+	wins: number,
+	bonus: number, -- promotion points from daily bonuses
+	streak: number, -- consecutive days with a win
+	lastDaily: number, -- day index (os.time() / 86400) of the last daily bonus
 }
 
 type Profile = {
@@ -49,7 +53,7 @@ do
 end
 
 local function defaultData(): Data
-	return { version = 1, best = {}, seen = {}, plays = 0 }
+	return { version = 1, best = {}, seen = {}, plays = 0, wins = 0, bonus = 0, streak = 0, lastDaily = 0 }
 end
 
 -- Never trust stored data blindly: rebuild a clean table from known fields.
@@ -84,8 +88,10 @@ local function sanitize(raw: any): Data
 			end
 		end
 	end
-	if type(raw.plays) == "number" then
-		data.plays = raw.plays
+	for _, key in { "plays", "wins", "bonus", "streak", "lastDaily" } do
+		if type(raw[key]) == "number" then
+			data[key] = raw[key]
+		end
 	end
 	return data
 end
@@ -195,7 +201,9 @@ function DataService.save(player: Player): boolean
 			for key in previous.seen do
 				merged.seen[key] = true
 			end
-			merged.plays = math.max(merged.plays, previous.plays)
+			for _, key in { "plays", "wins", "bonus", "streak", "lastDaily" } do
+				merged[key] = math.max(merged[key], previous[key])
+			end
 			return merged
 		end)
 	end)
